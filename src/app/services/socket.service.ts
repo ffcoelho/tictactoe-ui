@@ -27,6 +27,11 @@ export class SocketService {
     this.socket.emit('join', info);
     return new Observable<MatchModel>(observer => {
       this.socket.on('update', (roomData: MatchModel) => {
+        if (!roomData.active) {
+          observer.next(null);
+          this.socket.disconnect();
+          return;
+        }
         observer.next(roomData);
       });
     });
