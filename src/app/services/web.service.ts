@@ -21,6 +21,6 @@ export class WebService {
   }
 
   postJoinMatch(reqObj: MatchRequestModel): Observable<any> {
-    return this.http.post(`${this.apiUrl}/create`, reqObj);
+    return this.http.post(`${this.apiUrl}/join`, reqObj);
   }
 }
