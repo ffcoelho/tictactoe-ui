@@ -16,15 +16,18 @@ export class SplashComponent implements OnInit {
 
   ngOnInit(): void {
     this.initSvc.start().then(() => {
+      console.log('A');
       this.assetsLoaded = true;
-      // this.navigateUser();
+      this.navigateUser();
     });
   }
 
   navigateUser(): void {
+    console.log('B');
     setTimeout(() => {
+      console.log('C');
       this.router.navigateByUrl('/home');
-    }, 4200);
+    }, 3500);
   }
 
 }
