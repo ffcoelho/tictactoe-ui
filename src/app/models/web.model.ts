@@ -34,3 +34,8 @@ export interface MatchRequestModel {
   id: string;
   name: string;
 }
+
+export interface JoinMatchRequestModel {
+  matchId: string;
+  playerId: string;
+}

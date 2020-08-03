@@ -1,0 +1,19 @@
+.test-console {
+  width: 600px;
+  height: 400px;
+  padding: 20px;
+  background-color: #CCCCCC;
+  font-family: monospace;
+  font-size: 12px;
+  .test-console__form {
+    .test-console__btn {
+      background-color: #777777;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: underline;
+    }
+  }
+  .test-console__monitor {
+
+  }
+}

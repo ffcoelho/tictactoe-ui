@@ -1,1 +1,29 @@
-<p>home works!</p>
+<div class="test-console">
+  <div class="test-console__form">
+    <div class="test-console__btn" (click)="create()">
+      CREATE
+    </div>
+  </div>
+  <div class="test-console__form" [formGroup]="joinForm">
+    <p>JOIN</p>
+    matchId:&nbsp;<input formControlName="matchId" type="text">
+    <p>id: {{ joinForm.get('id').value || 'N/A' }}</p>
+    name:&nbsp;<input formControlName="name" type="text">
+    <div class="test-console__btn" (click)="join()">
+      JOIN
+    </div>
+  </div>
+  <div class="test-console__monitor" *ngIf="roomsData">
+    <p>&nbsp;</p>
+    <p>ROOMS DATA</p>
+    <p>- rooms: {{ roomsData.rooms | json }}</p>
+  </div>
+  <div class="test-console__monitor" *ngIf="matchData">
+    <p>&nbsp;</p>
+    <p>MATCH DATA</p>
+    <p>- ID: {{ matchData.id }}</p>
+    <p>- ACTIVE: {{ matchData.active }}</p>
+    <p>- PLAYERS: {{ matchData.players | json }}</p>
+    <p>- STATE: {{ matchData.state | json }}</p>
+  </div>
+</div>

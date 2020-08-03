@@ -17,7 +17,7 @@ export class WebService {
   }
 
   postCreateMatch(): Observable<any> {
-    return this.http.post(`${this.apiUrl}/create`, null);
+    return this.http.post(`${this.apiUrl}/match`, null);
   }
 
   postJoinMatch(reqObj: MatchRequestModel): Observable<any> {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import * as io from 'socket.io-client';
-import { MatchRequestModel, MatchModel } from '../models/web.model';
+import { MatchRequestModel, MatchModel, JoinMatchRequestModel } from '../models/web.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +20,7 @@ export class SocketService {
     this.socket = io(`${this.apiUrl}`);
   }
 
-  joinMatch(info: MatchRequestModel): Observable<MatchModel> {
+  joinMatch(info: JoinMatchRequestModel): Observable<MatchModel> {
     if (!this.initialized) {
       this.setupSocketConnection();
     }
