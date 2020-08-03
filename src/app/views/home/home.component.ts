@@ -13,6 +13,10 @@ import { MatchRequestModel, MatchModel } from '../../models/web.model';
 })
 export class HomeComponent implements OnInit {
 
+  get appInitialized(): boolean {
+    return this.initSvc.initialized;
+  }
+
   public roomsData: any;
   public matchData: MatchModel;
   public joinForm: FormGroup;
@@ -34,6 +38,12 @@ export class HomeComponent implements OnInit {
       name: [ null ]
     });
     this.webSvc.getLobby().subscribe(rooms => this.roomsData = rooms);
+  }
+
+  selectCreate(): void {
+  }
+
+  selectJoin(): void {
   }
 
   create(): void {

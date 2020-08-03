@@ -6,15 +6,15 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HomeComponent } from './views/home/home.component';
-import { SplashComponent } from './views/splash/splash.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
+import { SplashComponent } from './views/splash/splash.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
-    SplashComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    SplashComponent
   ],
   imports: [
     BrowserModule,
