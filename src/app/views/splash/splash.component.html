@@ -1,8 +1,8 @@
 <div class="splash-container">
   <div class="loading" *ngIf="!assetsLoaded">
-    <p>Loading</p>
+    <app-spinner></app-spinner>
   </div>
   <div class="splash-content" *ngIf="assetsLoaded">
-    <h1>Tic-Tac-Toe</h1>
+    <h1>Tic<span>-</span>Tac<span>-</span>Toe</h1>
   </div>
 </div>

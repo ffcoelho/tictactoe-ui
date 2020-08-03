@@ -17,7 +17,7 @@ export class SplashComponent implements OnInit {
   ngOnInit(): void {
     this.initSvc.start().then(() => {
       this.assetsLoaded = true;
-      this.navigateUser();
+      // this.navigateUser();
     });
   }
 

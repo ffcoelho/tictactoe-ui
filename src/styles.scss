@@ -1,3 +1,12 @@
 @import './assets/styles/reset';
 @import './assets/styles/fonts';
 @import './assets/styles/variables';
+
+html, body {
+  height: 100%;
+}
+body {
+  overscroll-behavior-y: contain;
+  font-family: $base-font;
+  background-color: $bg-color;
+}
