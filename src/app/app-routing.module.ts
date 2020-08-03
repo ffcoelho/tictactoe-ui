@@ -1,9 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { SplashComponent } from './views/splash/splash.component';
 import { HomeComponent } from './views/home/home.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent }
+  { path: '', component: SplashComponent },
+  { path: 'home', component: HomeComponent },
+  { path: '**', redirectTo: '' }
 ];
 
 @NgModule({

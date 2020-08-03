@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { InitializerService } from 'src/app/services/initializer.service';
 import { WebService } from '../../services/web.service';
 import { SocketService } from '../../services/socket.service';
 import { MatchRequestModel, MatchModel } from '../../models/web.model';
@@ -15,11 +17,20 @@ export class HomeComponent implements OnInit {
   public matchData: MatchModel;
   public joinForm: FormGroup;
 
-  constructor(private fb: FormBuilder,
+  constructor(private router: Router,
+              private fb: FormBuilder,
+              private initSvc: InitializerService,
               private webSvc: WebService,
               private socketSvc: SocketService) { }
 
   ngOnInit(): void {
+    console.log('a');
+    if (!this.initSvc.initialized) {
+      console.log('b');
+      this.router.navigateByUrl('/');
+      return;
+    }
+    console.log('c');
     this.joinForm = this.fb.group({
       matchId: [ null ],
       id: [ null ],
