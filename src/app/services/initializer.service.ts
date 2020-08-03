@@ -7,7 +7,10 @@ import * as FontFaceObserver from 'fontfaceobserver';
 })
 export class InitializerService {
 
-  initialized = false;
+  private svcInitialized = false;
+  get initialized(): boolean {
+    return this.svcInitialized;
+  }
 
   fontsData = {
     'Rock Salt': { weight: 400 },
@@ -20,10 +23,10 @@ export class InitializerService {
   constructor() { }
 
   start(): Promise<any> {
-    if (this.initialized) {
+    if (this.svcInitialized) {
       return null;
     }
-    this.initialized = true;
+    this.svcInitialized = true;
     return new Promise((resolve, reject) => {
       Object.keys(this.fontsData).forEach(family => {
         const data = this.fontsData[family];

@@ -24,13 +24,10 @@ export class HomeComponent implements OnInit {
               private socketSvc: SocketService) { }
 
   ngOnInit(): void {
-    console.log('a');
     if (!this.initSvc.initialized) {
-      console.log('b');
       this.router.navigateByUrl('/');
       return;
     }
-    console.log('c');
     this.joinForm = this.fb.group({
       matchId: [ null ],
       id: [ null ],

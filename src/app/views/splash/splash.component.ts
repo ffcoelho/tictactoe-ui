@@ -9,7 +9,7 @@ import { InitializerService } from '../../services/initializer.service';
 })
 export class SplashComponent implements OnInit {
 
-  assetsLoaded: boolean;
+  assetsLoaded = false;
 
   constructor(private router: Router,
               private initSvc: InitializerService) { }

@@ -1,0 +1,26 @@
+@font-face {
+  font-family: 'Rock Salt';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Rock Salt Regular'), local('RockSalt-Regular'),
+       url('/assets/fonts/rock-salt-v10-latin-regular.woff2') format('woff2'),
+       url('/assets/fonts/rock-salt-v10-latin-regular.woff') format('woff'),
+}
+
+@font-face {
+  font-family: 'Mansalva';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Mansalva Regular'), local('Mansalva-Regular'),
+       url('/assets/fonts/mansalva-v2-latin-regular.woff2') format('woff2'),
+       url('/assets/fonts/mansalva-v2-latin-regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Play';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Play Regular'), local('Play-Regular'),
+       url('/assets/fonts/play-v11-latin-regular.woff2') format('woff2'),
+       url('/assets/fonts/play-v11-latin-regular.woff') format('woff');
+}
