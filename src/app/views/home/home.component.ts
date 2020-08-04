@@ -36,12 +36,13 @@ export class HomeComponent implements OnInit {
               private socketSvc: SocketService) { }
 
   ngOnInit(): void {
+    // mock
     this.matchData = {
       id: 'test',
       active: true,
       players: [
         { id: 'H2qnFCnH5a', name: 'Player 1', online: true },
-        { id: 'H2qnFCnH5b', name: 'Player 2Player 2', online: true },
+        { id: 'H2qnFCnH5b', name: 'Player 2', online: true },
       ],
       state: {
         turn: 0,
@@ -49,6 +50,7 @@ export class HomeComponent implements OnInit {
       }
     };
     this.homeState = HomeState.GAME;
+    // mock
     if (!this.initSvc.initialized) {
       this.router.navigateByUrl('/');
       return;
