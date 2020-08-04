@@ -1,10 +1,17 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { InitializerService } from 'src/app/services/initializer.service';
 import { WebService } from '../../services/web.service';
 import { SocketService } from '../../services/socket.service';
 import { MatchRequestModel, MatchModel } from '../../models/web.model';
+
+export enum HomeState {
+  OPTIONS = 'options',
+  CREATE = 'create',
+  JOIN = 'join',
+  GAME = 'game'
+}
 
 @Component({
   selector: 'app-home',
@@ -17,9 +24,10 @@ export class HomeComponent implements OnInit {
     return this.initSvc.initialized;
   }
 
+  public homeState = HomeState.OPTIONS;
   public roomsData: any;
   public matchData: MatchModel;
-  public joinForm: FormGroup;
+  public homeForm: FormGroup;
 
   constructor(private router: Router,
               private fb: FormBuilder,
@@ -28,42 +36,62 @@ export class HomeComponent implements OnInit {
               private socketSvc: SocketService) { }
 
   ngOnInit(): void {
+    this.matchData = {
+      id: 'test',
+      active: true,
+      players: [
+        { id: 'H2qnFCnH5a', name: 'Player 1', online: true },
+        { id: 'H2qnFCnH5b', name: 'Player 2Player 2', online: true },
+      ],
+      state: {
+        turn: 0,
+        table: 111111111
+      }
+    };
+    this.homeState = HomeState.GAME;
     if (!this.initSvc.initialized) {
       this.router.navigateByUrl('/');
       return;
     }
-    this.joinForm = this.fb.group({
-      matchId: [ null ],
-      id: [ null ],
-      name: [ null ]
+    this.homeForm = this.fb.group({
+      matchId: [ null, Validators.required ],
+      id: [ null, Validators.required ],
+      name: [ null, Validators.required ]
     });
     this.webSvc.getLobby().subscribe(rooms => this.roomsData = rooms);
   }
 
   selectCreate(): void {
+    this.homeState = HomeState.CREATE;
   }
 
   selectJoin(): void {
+    this.homeState = HomeState.JOIN;
+  }
+
+  backToOptions(): void {
+    this.homeState = HomeState.OPTIONS;
   }
 
   create(): void {
     this.webSvc.postCreateMatch().subscribe(resp => {
-      this.joinForm.get('matchId').patchValue(resp.matchId);
+      this.homeForm.get('matchId').patchValue(resp.matchId);
+      this.join();
     });
   }
 
   join(): void {
-    this.webSvc.postJoinMatch(this.joinForm.value).subscribe(resp => {
-      this.socketSvc.setupSocketConnection();
+    this.webSvc.postJoinMatch(this.homeForm.value).subscribe(resp => {
+      this.homeForm.get('id').patchValue(resp.matchId);
       this.socketSvc.joinMatch(
         {
-          matchId: this.joinForm.get('matchId').value,
+          matchId: this.homeForm.get('matchId').value,
           playerId: resp.playerId
         }
       ).subscribe(data => {
         this.updateMatchData(data);
+        this.homeState = HomeState.GAME;
       });
-      this.joinForm.get('id').patchValue(resp.matchId);
     });
   }
 
@@ -71,4 +99,8 @@ export class HomeComponent implements OnInit {
     this.matchData = data;
   }
 
+  avatar(name: string): string {
+    const formattedName = name.replace(/ /g, '_');
+    return `https://api.adorable.io/avatars/96/${formattedName}.png`
+  }
 }

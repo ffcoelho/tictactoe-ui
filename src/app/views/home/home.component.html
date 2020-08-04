@@ -3,9 +3,42 @@
     <h1>Tic<span>-</span>Tac<span>-</span>Toe</h1>
   </div>
   <div class="home-content">
-    <div class="options">
+    <div class="options" *ngIf="homeState === 'options'">
       <button class="option-btn" (click)="selectCreate()">New</button>
       <button class="option-btn" (click)="selectJoin()">Join</button>
+    </div>
+    <div class="options" [formGroup]="homeForm" *ngIf="homeState === 'create'">
+      <p>New</p>
+      <input class="option-input" type="text" maxlength="16" placeholder="Player Name" formControlName="name">
+      <div class="btn-container">
+        <button class="btn" [disabled]="homeForm.get('name').invalid" (click)="create()">Create</button>
+        <button class="btn" (click)="backToOptions()">Cancel</button>
+      </div>
+    </div>
+    <div class="options" [formGroup]="homeForm" *ngIf="homeState === 'join'">
+      <p>Join</p>
+      <input class="option-input" type="text" maxlength="16" placeholder="Game id" formControlName="matchId">
+      <input class="option-input" type="text" maxlength="16" placeholder="Player name" formControlName="name">
+      <div class="btn-container">
+        <button class="btn" [disabled]="homeForm.get('name').invalid" (click)="join()">Enter</button>
+        <button class="btn" (click)="backToOptions()">Cancel</button>
+      </div>
+    </div>
+    <div class="game" *ngIf="homeState === 'game'">
+      <div class="players">
+        <div class="player" *ngFor="let player of matchData.players">
+          <img [src]="avatar(player.name)" [alt]="player.name">
+          <p class="player-name">{{ player.name }}</p>
+        </div>
+        <div class="score">
+          <span>12</span>
+          <span>34</span>
+        </div>
+        <div class="score-divider">
+          <span>x</span>
+        </div>
+      </div>
+      <div class="table"></div>
     </div>
   </div>
 </div>
