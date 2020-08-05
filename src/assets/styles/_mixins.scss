@@ -5,6 +5,15 @@
   align-items: center;
 }
 
+@mixin user-select-on {
+  -webkit-touch-callout: auto;
+  -webkit-user-select: auto;
+  -khtml-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+}
+
 @mixin user-select-none {
   -webkit-touch-callout: none;
   -webkit-user-select: none;

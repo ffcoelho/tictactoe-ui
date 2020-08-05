@@ -28,6 +28,7 @@ export class HomeComponent implements OnInit {
   public roomsData: any;
   public matchData: MatchModel;
   public homeForm: FormGroup;
+  public avatars: any[];
 
   constructor(private router: Router,
               private fb: FormBuilder,
@@ -37,19 +38,19 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     // mock
-    this.matchData = {
-      id: 'test',
-      active: true,
-      players: [
-        { id: 'H2qnFCnH5a', name: 'Player 1', online: true },
-        { id: 'H2qnFCnH5b', name: 'Player 2', online: true },
-      ],
-      state: {
-        turn: 0,
-        table: 111111111
-      }
-    };
-    this.homeState = HomeState.GAME;
+    // this.matchData = {
+    //   id: 'test',
+    //   active: true,
+    //   players: [
+    //     { id: 'H2qnFCnH5a', name: 'Player 1', online: true },
+    //     { id: 'H2qnFCnH5b', name: 'Player 2', online: true },
+    //   ],
+    //   state: {
+    //     turn: 0,
+    //     table: 111111111
+    //   }
+    // };
+    // this.homeState = HomeState.GAME;
     // mock
     if (!this.initSvc.initialized) {
       this.router.navigateByUrl('/');
@@ -91,6 +92,12 @@ export class HomeComponent implements OnInit {
           playerId: resp.playerId
         }
       ).subscribe(data => {
+        if (!this.avatars) {
+          this.avatarsInit(data.players);
+        }
+        if (this.avatars.length < 2 && data.players.length > 1) {
+          this.updateAvatars(data.players[1]);
+        }
         this.updateMatchData(data);
         this.homeState = HomeState.GAME;
       });
@@ -101,8 +108,41 @@ export class HomeComponent implements OnInit {
     this.matchData = data;
   }
 
-  avatar(name: string): string {
-    const formattedName = name.replace(/ /g, '_');
-    return `https://api.adorable.io/avatars/96/${formattedName}.png`
+  avatarsInit(players: any[]): void {
+    this.avatars = [];
+    players.forEach((player: any) => {
+      this.updateAvatars(player);
+    });
+  }
+
+  updateAvatars(player: any): void {
+    const formattedName = player.name.replace(/ /g, '_');
+    this.avatars.push({
+      loaded: false,
+      url: `https://api.adorable.io/avatars/96/${formattedName}.png`
+    });
+  }
+
+  selectId(): void {
+    const matchIdInput: HTMLInputElement = document.getElementById('match-id') as HTMLInputElement;
+    matchIdInput.select();
+    matchIdInput.setSelectionRange(0, 99999);
+  }
+
+  copyInfo(): void {
+    const matchIdInput: HTMLInputElement = document.getElementById('match-id') as HTMLInputElement;
+    matchIdInput.select();
+    matchIdInput.setSelectionRange(0, 99999);
+    document.execCommand('copy');
+    matchIdInput.blur();
+  }
+
+  keepInfo(): void {
+    const matchIdInput: HTMLInputElement = document.getElementById('match-id') as HTMLInputElement;
+    matchIdInput.value = this.matchData.id;
+  }
+
+  leaveGame(): void {
+    window.location.reload();
   }
 }
