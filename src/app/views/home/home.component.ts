@@ -29,6 +29,8 @@ export class HomeComponent implements OnInit {
   public matchData: MatchModel;
   public homeForm: FormGroup;
   public avatars: any[];
+  public player: number;
+  public sentPlay = true;
 
   constructor(private router: Router,
               private fb: FormBuilder,
@@ -37,7 +39,7 @@ export class HomeComponent implements OnInit {
               private socketSvc: SocketService) { }
 
   ngOnInit(): void {
-    // mock
+    // // mock
     // this.matchData = {
     //   id: 'test',
     //   active: true,
@@ -46,12 +48,15 @@ export class HomeComponent implements OnInit {
     //     { id: 'H2qnFCnH5b', name: 'Player 2', online: true },
     //   ],
     //   state: {
-    //     turn: 0,
-    //     table: 111111111
+    //     turn: 2,
+    //     score: [ 0, 0, 0 ],
+    //     board: [ 1, 2, 1, 2, 2, 1, 2, 1, 2 ]
     //   }
     // };
+    // this.avatars = [{ loaded: false, url: 'https://api.adorable.io/avatars/96/a.png' }, { loaded: false, url: 'https://api.adorable.io/avatars/96/b.png' }];
+    // this.player = 1;
     // this.homeState = HomeState.GAME;
-    // mock
+    // // mock
     if (!this.initSvc.initialized) {
       this.router.navigateByUrl('/');
       return;
@@ -78,6 +83,7 @@ export class HomeComponent implements OnInit {
 
   create(): void {
     this.webSvc.postCreateMatch().subscribe(resp => {
+      this.player = 1;
       this.homeForm.get('matchId').patchValue(resp.matchId);
       this.join();
     });
@@ -106,12 +112,18 @@ export class HomeComponent implements OnInit {
 
   updateMatchData(data: any): void {
     this.matchData = data;
+    if (this.matchData.state.turn === this.player) {
+      this.sentPlay = false;
+    }
   }
 
   avatarsInit(players: any[]): void {
     this.avatars = [];
-    players.forEach((player: any) => {
+    players.forEach((player: any, idx: number) => {
       this.updateAvatars(player);
+      if (idx > 0) {
+        this.player = idx + 1;
+      }
     });
   }
 
@@ -123,12 +135,6 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  selectId(): void {
-    const matchIdInput: HTMLInputElement = document.getElementById('match-id') as HTMLInputElement;
-    matchIdInput.select();
-    matchIdInput.setSelectionRange(0, 99999);
-  }
-
   copyInfo(): void {
     const matchIdInput: HTMLInputElement = document.getElementById('match-id') as HTMLInputElement;
     matchIdInput.select();
@@ -137,9 +143,16 @@ export class HomeComponent implements OnInit {
     matchIdInput.blur();
   }
 
-  keepInfo(): void {
-    const matchIdInput: HTMLInputElement = document.getElementById('match-id') as HTMLInputElement;
-    matchIdInput.value = this.matchData.id;
+  boardClick(idx: number): void {
+    if (this.matchData.state.turn !== this.player || this.sentPlay) {
+      return;
+    }
+    if (this.matchData.state.board[idx] !== 0) {
+      return;
+    }
+    // this.matchData.state.board[idx] = this.matchData.state.turn;
+    this.sentPlay = true;
+    this.socketSvc.play(idx);
   }
 
   leaveGame(): void {

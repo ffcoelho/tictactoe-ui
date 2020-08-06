@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import * as io from 'socket.io-client';
-import { MatchRequestModel, MatchModel, JoinMatchRequestModel } from '../models/web.model';
+import { MatchModel, JoinMatchRequestModel } from '../models/web.model';
 
 @Injectable({
   providedIn: 'root'
@@ -33,5 +33,12 @@ export class SocketService {
         observer.next(roomData);
       });
     });
+  }
+
+  play(place: number): void {
+    if (this.socket.disconnected) {
+      return;
+    }
+    this.socket.emit('play', place);
   }
 }

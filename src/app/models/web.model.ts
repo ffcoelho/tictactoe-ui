@@ -10,8 +10,11 @@ interface PlayerModel {
 }
 
 interface GameStateModel {
+  board: number[];
+  matchState: string;
+  score: number[];
   turn: number;
-  table: number;
+  winLine: string;
 }
 
 export interface MatchModel {

@@ -31,18 +31,14 @@
           <p class="player-name">{{ player.name }}</p>
         </div>
         <div class="score">
-          <span>0</span>
-          <span>0</span>
-        </div>
-        <div class="score-divider">
-          <span>x</span>
+          <span *ngFor="let score of matchData.state.score">{{ score }}</span>
         </div>
       </div>
       <div class="table match-info" *ngIf="matchData.players.length === 1">
         <div class="info">
           <span>Game id:&nbsp;</span>
           <span class="match-id-text">{{ matchData.id }}</span>
-          <input id="match-id" type="text" [value]="matchData.id" (focus)="selectId()" (change)="keepInfo()">
+          <input id="match-id" type="text" [value]="matchData.id">
         </div>
         <div class="copy-info" (click)="copyInfo()">
           <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">
@@ -53,6 +49,13 @@
         <button class="info-btn" (click)="leaveGame()">Leave</button>
       </div>
       <div class="table" *ngIf="matchData.players.length > 1">
+        <div class="board">
+          <p *ngIf="matchData.state.matchState === 'end'">over: {{ matchData.state.winLine }}</p>
+          <img src="../../../assets/images/board.png" alt="Board">
+          <div class="board-pad" *ngFor="let place of matchData.state.board; let idx = index" [disabled]="matchData.state.turn !== player" (click)="boardClick(idx)">
+            {{ place === 2 ? 'x' : place === 1 ? 'o' : '' }}
+          </div>
+        </div>
         <button class="info-btn" (click)="leaveGame()">Leave</button>
       </div>
     </div>
