@@ -30,7 +30,7 @@
   .home-content {
     @include flex;
     width: 100%;
-    height: calc(100% - 80px);
+    height: calc(100% - 102px);
     opacity: 0;
     animation: fade-in 670ms ease-in;
     animation-fill-mode: forwards;
@@ -45,6 +45,15 @@
         font-family: $logo-font;
         font-size: 72px;
         color: #dddddd;
+      }
+      .server-status {
+        @include flex;
+        width: 240px;
+        height: 42px;
+        border-top: rgba(0,0,0,0.2);
+        svg {
+          margin-right: 8px;
+        }
       }
       .option-input {
         height: 40px;

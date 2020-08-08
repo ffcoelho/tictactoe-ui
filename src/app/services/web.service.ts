@@ -12,7 +12,7 @@ export class WebService {
 
   constructor(private http: HttpClient) { }
 
-  getLobby(): Observable<any> {
+  getApi(): Observable<any> {
     return this.http.get(`${this.apiUrl}/`);
   }
 

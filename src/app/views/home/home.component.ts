@@ -4,7 +4,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { InitializerService } from 'src/app/services/initializer.service';
 import { WebService } from '../../services/web.service';
 import { SocketService } from '../../services/socket.service';
-import { MatchRequestModel, MatchModel } from '../../models/web.model';
+import { MatchModel } from '../../models/web.model';
 
 export enum HomeState {
   OPTIONS = 'options',
@@ -34,6 +34,8 @@ export class HomeComponent implements OnInit {
     return formattedName.length > 0;
   }
 
+  public apiStatus = 0;
+  public apiTimer: any;
   public homeState = HomeState.OPTIONS;
   public roomsData: any;
   public matchData: MatchModel;
@@ -50,27 +52,6 @@ export class HomeComponent implements OnInit {
               private socketSvc: SocketService) { }
 
   ngOnInit(): void {
-    // // mock
-    // this.matchData = {
-    //   id: 'test',
-    //   active: true,
-    //   players: [
-    //     { id: 'H2qnFCnH5a', name: 'Player 1', online: true },
-    //     { id: 'H2qnFCnH5b', name: 'Player 2', online: true },
-    //   ],
-    //   state: {
-    //     turn: 2,
-    //     matchState: 'play',
-    //     score: [ 0, 0, 0 ],
-    //     board: [ 1, 0, 0, 1, 0, 0, 0, 0, 2 ],
-    //     winLine: 'none'
-    //   }
-    // };
-    // this.blockUi = false;
-    // this.avatars = [{ loaded: false, url: 'https://api.adorable.io/avatars/96/a.png' }, { loaded: false, url: 'https://api.adorable.io/avatars/96/b.png' }];
-    // this.mark = 1;
-    // this.homeState = HomeState.GAME;
-    // // mock
     if (!this.initSvc.initialized) {
       this.router.navigateByUrl('/');
       return;
@@ -80,19 +61,42 @@ export class HomeComponent implements OnInit {
       id: [ null, Validators.required ],
       name: [ null, Validators.required ]
     });
-    this.webSvc.getLobby().subscribe(rooms => this.roomsData = rooms);
+    this.startApiTimer();
   }
 
   selectCreate(): void {
+    clearInterval(this.apiTimer);
     this.homeState = HomeState.CREATE;
   }
 
   selectJoin(): void {
+    clearInterval(this.apiTimer);
     this.homeState = HomeState.JOIN;
   }
 
   backToOptions(): void {
     this.homeState = HomeState.OPTIONS;
+    this.startApiTimer();
+  }
+
+  startApiTimer(): void {
+    this.connectApi();
+    this.apiTimer = setInterval(() => {
+      this.connectApi();
+    }, 5000);
+  }
+
+  connectApi(): void {
+    this.webSvc.getApi().subscribe(resp => {
+      if (!resp || !resp.rooms) {
+        this.apiStatus = 2;
+        return;
+      }
+      this.roomsData = resp.rooms;
+      this.apiStatus = 1;
+    }, () => {
+      this.apiStatus = 2;
+    });
   }
 
   create(): void {
