@@ -76,7 +76,7 @@
             <span>{{ matchData.state.turn === mark ? 'Your turn!' : 'Wait for your turn.'}}</span>
           </div>
           <div class="game-info" *ngIf="blockUi && matchData.state.winLine !== 'draw'">
-            <span>{{ matchData.state.turn === 1 ? matchData.players[1].name : matchData.players[0].name }} won!</span>
+            <span>{{ matchData.state.turn === 1 ? matchData.players[1].name : matchData.players[0].name }} win!</span>
           </div>
           <div class="game-info" *ngIf="blockUi && matchData.state.winLine === 'draw'">
             <span>Draw!</span>
@@ -100,5 +100,5 @@
       <p>Click anywhere to exit.</p>
     </div>
   </div>
-  <p class="dev-link"><a href="https://ffcoelho-dev.web.app" target="_blank" *ngIf="homeState === 'options'">Fernando Coelho</a> - 2020</p>
+  <p class="dev-link" *ngIf="homeState === 'options'"><a href="https://ffcoelho-dev.web.app" target="_blank">Fernando Coelho</a> - 2020</p>
 </div>

@@ -8,7 +8,7 @@ import { MatchModel, JoinMatchRequestModel } from '../models/web.model';
 })
 export class SocketService {
 
-  apiUrl = 'http://127.0.0.1:9000';
+  apiUrl = 'https://fcoelho-tictactoe-api.herokuapp.com';
 
   initialized = false;
   socket: SocketIOClient.Socket;

@@ -8,12 +8,12 @@ import { MatchRequestModel } from '../models/web.model';
 })
 export class WebService {
 
-  apiUrl = 'http://127.0.0.1:9000';
+  apiUrl = 'https://fcoelho-tictactoe-api.herokuapp.com';
 
   constructor(private http: HttpClient) { }
 
   getApi(): Observable<any> {
-    return this.http.get(`${this.apiUrl}/`);
+    return this.http.get(`${this.apiUrl}/info`);
   }
 
   postCreateMatch(): Observable<any> {
