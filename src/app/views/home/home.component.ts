@@ -24,13 +24,24 @@ export class HomeComponent implements OnInit {
     return this.initSvc.initialized;
   }
 
+  get validMatchId(): boolean {
+    const formattedId: string = this.homeForm.get('matchId').value.replace(/ /g, '');
+    return formattedId.length > 0;
+  }
+
+  get validName(): boolean {
+    const formattedName: string = this.homeForm.get('name').value.replace(/ /g, '');
+    return formattedName.length > 0;
+  }
+
   public homeState = HomeState.OPTIONS;
   public roomsData: any;
   public matchData: MatchModel;
   public homeForm: FormGroup;
   public avatars: any[];
-  public player: number;
+  public mark: number;
   public sentPlay = true;
+  public blockUi = false;
 
   constructor(private router: Router,
               private fb: FormBuilder,
@@ -49,12 +60,15 @@ export class HomeComponent implements OnInit {
     //   ],
     //   state: {
     //     turn: 2,
+    //     matchState: 'play',
     //     score: [ 0, 0, 0 ],
-    //     board: [ 1, 2, 1, 2, 2, 1, 2, 1, 2 ]
+    //     board: [ 1, 0, 0, 1, 0, 0, 0, 0, 2 ],
+    //     winLine: 'none'
     //   }
     // };
+    // this.blockUi = false;
     // this.avatars = [{ loaded: false, url: 'https://api.adorable.io/avatars/96/a.png' }, { loaded: false, url: 'https://api.adorable.io/avatars/96/b.png' }];
-    // this.player = 1;
+    // this.mark = 1;
     // this.homeState = HomeState.GAME;
     // // mock
     if (!this.initSvc.initialized) {
@@ -82,14 +96,16 @@ export class HomeComponent implements OnInit {
   }
 
   create(): void {
+    this.homeForm.get('name').patchValue(this.homeForm.get('name').value.trim());
     this.webSvc.postCreateMatch().subscribe(resp => {
-      this.player = 1;
+      this.mark = 1;
       this.homeForm.get('matchId').patchValue(resp.matchId);
       this.join();
     });
   }
 
   join(): void {
+    this.homeForm.get('name').patchValue(this.homeForm.get('name').value.trim());
     this.webSvc.postJoinMatch(this.homeForm.value).subscribe(resp => {
       this.homeForm.get('id').patchValue(resp.matchId);
       this.socketSvc.joinMatch(
@@ -112,7 +128,14 @@ export class HomeComponent implements OnInit {
 
   updateMatchData(data: any): void {
     this.matchData = data;
-    if (this.matchData.state.turn === this.player) {
+    if (this.matchData.state.matchState === 'end') {
+      this.blockUi = true;
+      setTimeout(() => {
+        this.matchData.state.board = [ 0, 0, 0, 0, 0, 0, 0, 0, 0 ];
+        this.blockUi = false;
+      }, 3600);
+    }
+    if (this.matchData.state.turn === this.mark) {
       this.sentPlay = false;
     }
   }
@@ -122,7 +145,7 @@ export class HomeComponent implements OnInit {
     players.forEach((player: any, idx: number) => {
       this.updateAvatars(player);
       if (idx > 0) {
-        this.player = idx + 1;
+        this.mark = idx + 1;
       }
     });
   }
@@ -144,13 +167,12 @@ export class HomeComponent implements OnInit {
   }
 
   boardClick(idx: number): void {
-    if (this.matchData.state.turn !== this.player || this.sentPlay) {
+    if (this.matchData.state.turn !== this.mark || this.sentPlay) {
       return;
     }
     if (this.matchData.state.board[idx] !== 0) {
       return;
     }
-    // this.matchData.state.board[idx] = this.matchData.state.turn;
     this.sentPlay = true;
     this.socketSvc.play(idx);
   }

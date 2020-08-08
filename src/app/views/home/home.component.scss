@@ -3,6 +3,7 @@
 
 .home-container {
   @include flex;
+  position: relative;
   flex-direction: column;
   justify-content: flex-start;
   width: 100%;
@@ -48,7 +49,7 @@
       .option-input {
         height: 40px;
         width: 180px;
-        border: 1px solid #000000;
+        border: 1px solid #1A1A1A;
         border-radius: 7px;
         font-family: monospace;
         font-size: 20px;
@@ -96,7 +97,6 @@
       width: 100%;
       max-width: 640px;
       height: 100%;
-      // background-color: rgba(100,0,100,0.2);
       .players {
         @include user-select-none;
         @include flex;
@@ -105,7 +105,6 @@
         width: calc(100% - 20px);
         padding: 0 10px;
         opacity: 0;
-        // background-color: rgba(0,0,100,0.2);
         &.show {
           animation: fade-in 670ms ease-in;
           animation-fill-mode: forwards;
@@ -116,9 +115,22 @@
           img {
             width: 96px;
             height: 96px;
-            border: 2px solid #000000;
+            border: 2px solid #1A1A1A;
             border-radius: 50%;
             background-color: #CCCCCC;
+          }
+          .player-mark {
+            position: absolute;
+            top: 100px;
+            left: 42px;
+            opacity: 0.33;
+            font-family: $logo-font;
+            font-size: 24px;
+            &.on {
+              animation: on 670ms;
+              animation-iteration-count: infinite;
+              animation-delay: 50ms;
+            }
           }
           .player-name {
             position: absolute;
@@ -126,7 +138,7 @@
             left: 88px;
             width: 142px;
             padding: 3px;
-            border: 2px solid #000000;
+            border: 2px solid #1A1A1A;
             border-radius: 8px;
             font-family: monospace;
             font-size: 16px;
@@ -190,6 +202,13 @@
           width: 300px;
           height: 300px;
           // background-color: rgba(0,100,100,0.2);
+          .block-ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+          }
           .board-pad {
             position: absolute;
             width: 70px;
@@ -205,7 +224,7 @@
             cursor: pointer;
             -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
             &:disabled {
-              color: #000000;
+              color: #1A1A1A;
             }
             &:focus, &:active {
               background: none;
@@ -248,6 +267,78 @@
               left: 176px;
             }
           }
+          .game-info {
+            @include flex;
+            position: absolute;
+            top: 280px;
+            width: 300px;
+            span {
+              font-family: $base-font;
+              font-size: 14px;
+            }
+          }
+          .win-line {
+            @include flex;
+            position: absolute;
+            height: 100px;
+            img {
+              width: 260px;
+            }
+            &.hA {
+              top: 10px;
+              left: 20px;
+            }
+            &.hB {
+              top: 85px;
+              left: 14px;
+            }
+            &.hC {
+              top: 168px;
+              left: 16px;
+            }
+            &.vA {
+              top: 91px;
+              left: -65px;
+              transform: rotate(90deg);
+            }
+            &.vB {
+              top: 91px;
+              left: 7px;
+              transform: rotate(90deg);
+            }
+            &.vC {
+              top: 91px;
+              left: 85px;
+              transform: rotate(90deg);
+            }
+            &.dA {
+              top: 87px;
+              left: -12px;
+              transform: rotate(45deg);
+              img {
+                width: 300px;
+              }
+            }
+            &.dB {
+              top: 87px;
+              left: -12px;
+              transform: rotate(135deg);
+              img {
+                width: 300px;
+              }
+            }
+          }
+          .draw-lines {
+            @include flex;
+            position: absolute;
+            top: 18px;
+            left: -20px;
+            img {
+              width: 320px;
+              height: 240px;
+              transform: rotate(-20deg);
+            }
+          }
         }
         #match-id {
           position: fixed;
@@ -263,6 +354,54 @@
       }
     }
   }
+  .disconnect-modal {
+    @include user-select-none;
+    @include flex;
+    align-items: flex-end;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.2);
+    .modal-content {
+      @include flex;
+      flex-direction: column;
+      width: 320px;
+      height: 80px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+      background-color: #F1F1F1;
+      p {
+        &:nth-of-type(1) {
+          margin-bottom: 10px;
+          font-size: 20px;
+        }
+        &:nth-of-type(2) {
+          margin-bottom: 7px;
+        }
+        &:nth-of-type(3) {
+          font-size: 14px;
+          font-style: italic;
+          opacity: 0.5;
+        }
+      }
+    }
+  }
+  .dev-link {
+    @include user-select-none;
+    margin-bottom: 10px;
+    font-size: 12px;
+    font-style: italic;
+    color: #1A1A1A;
+    opacity: 0;
+    animation: fade-opaque 670ms ease-in;
+    animation-fill-mode: forwards;
+    animation-delay: 50ms;
+    a, a:visited {
+      text-decoration: none;
+      color: #1A1A1A;
+    }
+  }
 }
 
 @keyframes fade-in {
@@ -274,22 +413,23 @@
   }
 }
 
-.test-console {
-  width: 600px;
-  height: 400px;
-  padding: 20px;
-  background-color: #CCCCCC;
-  font-family: monospace;
-  font-size: 12px;
-  .test-console__form {
-    .test-console__btn {
-      background-color: #777777;
-      cursor: pointer;
-      font-weight: 600;
-      text-decoration: underline;
-    }
+@keyframes fade-opaque {
+  0% {
+    opacity: 0;
   }
-  .test-console__monitor {
+  100% {
+    opacity: 0.7;
+  }
+}
 
+@keyframes on {
+  0% {
+    opacity: 0.33;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.33;
   }
 }

@@ -11,7 +11,7 @@
       <p>New</p>
       <input class="option-input" type="text" maxlength="16" placeholder="Player Name" formControlName="name">
       <div class="btn-container">
-        <button class="btn" [disabled]="homeForm.get('name').invalid" (click)="create()">Create</button>
+        <button class="btn" [disabled]="homeForm.get('name').invalid || !validName" (click)="create()">Create</button>
         <button class="btn" (click)="backToOptions()">Cancel</button>
       </div>
     </div>
@@ -20,13 +20,14 @@
       <input class="option-input" type="text" maxlength="16" placeholder="Game id" formControlName="matchId">
       <input class="option-input" type="text" maxlength="16" placeholder="Player name" formControlName="name">
       <div class="btn-container">
-        <button class="btn" [disabled]="homeForm.get('name').invalid" (click)="join()">Enter</button>
+        <button class="btn" [disabled]="homeForm.get('matchId').invalid || homeForm.get('name').invalid || !validMatchId || !validName" (click)="join()">Enter</button>
         <button class="btn" (click)="backToOptions()">Cancel</button>
       </div>
     </div>
     <div class="game" *ngIf="homeState === 'game'">
       <div class="players" [ngClass]="{'show': matchData.players.length > 1}">
         <div class="player" *ngFor="let player of matchData.players; let idx = index">
+          <span class="player-mark" [ngClass]="{'on': (matchData.state.turn === idx + 1) && !blockUi}">{{ idx === 0 ? 'o' : 'x' }}</span>
           <img [src]="avatars[idx].url" [alt]="player.name">
           <p class="player-name">{{ player.name }}</p>
         </div>
@@ -46,49 +47,41 @@
             <path d="M15 1H4c-1.1 0-2 .9-2 2v13c0 .55.45 1 1 1s1-.45 1-1V4c0-.55.45-1 1-1h10c.55 0 1-.45 1-1s-.45-1-1-1zm4 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm-1 16H9c-.55 0-1-.45-1-1V8c0-.55.45-1 1-1h9c.55 0 1 .45 1 1v12c0 .55-.45 1-1 1z"/>
           </svg>
         </div>
-        <button class="info-btn" (click)="leaveGame()">Leave</button>
+        <button class="info-btn" (click)="leaveGame()">Exit</button>
       </div>
       <div class="table" *ngIf="matchData.players.length > 1">
         <div class="board">
-          <p *ngIf="matchData.state.matchState === 'end'">over: {{ matchData.state.winLine }}</p>
           <img src="../../../assets/images/board.png" alt="Board">
-          <div class="board-pad" *ngFor="let place of matchData.state.board; let idx = index" [disabled]="matchData.state.turn !== player" (click)="boardClick(idx)">
+          <div class="board-pad" *ngFor="let place of matchData.state.board; let idx = index" [disabled]="matchData.state.turn !== mark" (click)="boardClick(idx)">
             {{ place === 2 ? 'x' : place === 1 ? 'o' : '' }}
           </div>
+          <div class="game-info" *ngIf="!blockUi">
+            <span>{{ matchData.state.turn === mark ? 'Your turn!' : 'Wait for your turn.'}}</span>
+          </div>
+          <div class="game-info" *ngIf="blockUi && matchData.state.winLine !== 'draw'">
+            <span>{{ matchData.state.turn === 1 ? matchData.players[1].name : matchData.players[0].name }} won!</span>
+          </div>
+          <div class="game-info" *ngIf="blockUi && matchData.state.winLine === 'draw'">
+            <span>Draw!</span>
+          </div>
+          <div class="win-line {{ matchData.state.winLine }}" *ngIf="blockUi && matchData.state.winLine !== 'draw'">
+            <img src="../../../assets/images/line.png" alt="Line">
+          </div>
+          <div class="draw-lines" *ngIf="blockUi && matchData.state.winLine === 'draw'">
+            <img src="../../../assets/images/draw.png" alt="Draw">
+          </div>
+          <div class="block-ui" *ngIf="blockUi"></div>
         </div>
-        <button class="info-btn" (click)="leaveGame()">Leave</button>
+        <button class="info-btn" (click)="leaveGame()">Exit</button>
       </div>
     </div>
   </div>
+  <div class="disconnect-modal" (click)="leaveGame()" *ngIf="matchData && !matchData.active">
+    <div class="modal-content">
+      <p>GAME OVER</p>
+      <p>{{ mark === 1 ? matchData.players[1].name : matchData.players[0].name }} is offline.</p>
+      <p>Click anywhere to exit.</p>
+    </div>
+  </div>
+  <p class="dev-link"><a href="https://ffcoelho-dev.web.app" target="_blank" *ngIf="homeState === 'options'">Fernando Coelho</a> - 2020</p>
 </div>
-
-
-<!-- <div class="test-console" *ngIf="false">
-  <div class="test-console__form">
-    <div class="test-console__btn" (click)="create()">
-      CREATE
-    </div>
-  </div>
-  <div class="test-console__form" [formGroup]="joinForm">
-    <p>JOIN</p>
-    matchId:&nbsp;<input formControlName="matchId" type="text">
-    <p>id: {{ joinForm.get('id').value || 'N/A' }}</p>
-    name:&nbsp;<input formControlName="name" type="text">
-    <div class="test-console__btn" (click)="join()">
-      JOIN
-    </div>
-  </div>
-  <div class="test-console__monitor" *ngIf="roomsData">
-    <p>&nbsp;</p>
-    <p>ROOMS DATA</p>
-    <p>- rooms: {{ roomsData.rooms | json }}</p>
-  </div>
-  <div class="test-console__monitor" *ngIf="matchData">
-    <p>&nbsp;</p>
-    <p>MATCH DATA</p>
-    <p>- ID: {{ matchData.id }}</p>
-    <p>- ACTIVE: {{ matchData.active }}</p>
-    <p>- PLAYERS: {{ matchData.players | json }}</p>
-    <p>- STATE: {{ matchData.state | json }}</p>
-  </div>
-</div> -->
