@@ -36,6 +36,7 @@ export class HomeComponent implements OnInit {
 
   public apiStatus = 0;
   public apiTimer: any;
+  public connecting: boolean;
   public homeState = HomeState.OPTIONS;
   public roomsData: any;
   public matchData: MatchModel;
@@ -100,15 +101,19 @@ export class HomeComponent implements OnInit {
   }
 
   create(): void {
+    this.connecting = true;
     this.homeForm.get('name').patchValue(this.homeForm.get('name').value.trim());
     this.webSvc.postCreateMatch().subscribe(resp => {
       this.mark = 1;
       this.homeForm.get('matchId').patchValue(resp.matchId);
       this.join();
-    });
+    }, () => this.connecting = false);
   }
 
   join(): void {
+    if (!this.connecting) {
+      this.connecting = true;
+    }
     this.homeForm.get('name').patchValue(this.homeForm.get('name').value.trim());
     this.webSvc.postJoinMatch(this.homeForm.value).subscribe(resp => {
       this.homeForm.get('id').patchValue(resp.matchId);
@@ -126,7 +131,8 @@ export class HomeComponent implements OnInit {
         }
         this.updateMatchData(data);
         this.homeState = HomeState.GAME;
-      });
+        this.connecting = false;
+      }, () => this.connecting = false);
     });
   }
 

@@ -83,7 +83,12 @@
       }
       .btn-container {
         @include flex;
+        height: 60px;
         margin-top: 12px;
+        span {
+          font-family: $base-font;
+          font-style: 20px;
+        }
         .btn {
           height: 60px;
           width: 120px;
@@ -191,6 +196,7 @@
             }
           }
           .copy-info {
+            margin-bottom: 36px;
             cursor: pointer
           }
         }

@@ -20,25 +20,30 @@
         </svg>
         <span *ngIf="apiStatus === 1">Rooms: {{ roomsData.rooms > 9 ? '' : '0' }}{{ roomsData.rooms }} -&nbsp;</span>
         <span *ngIf="apiStatus === 1">Available: {{ roomsData.available > 9 ? '' : '0' }}{{ roomsData.available }}</span>
-        <span *ngIf="apiStatus === 2">Rooms:&nbsp;&nbsp;-&nbsp;</span>
-        <span *ngIf="apiStatus === 2">Available:</span>
+        <span *ngIf="apiStatus === 2">Rooms: 00 - Available: 00</span>
       </div>
     </div>
     <div class="options" [formGroup]="homeForm" *ngIf="homeState === 'create'">
       <p>New</p>
       <input class="option-input" type="text" maxlength="16" placeholder="Player Name" formControlName="name">
-      <div class="btn-container">
+      <div class="btn-container" *ngIf="!connecting">
         <button class="btn" [disabled]="homeForm.get('name').invalid || !validName" (click)="create()">Create</button>
         <button class="btn" (click)="backToOptions()">Cancel</button>
+      </div>
+      <div class="btn-container" *ngIf="connecting">
+        <span>Connecting</span>
       </div>
     </div>
     <div class="options" [formGroup]="homeForm" *ngIf="homeState === 'join'">
       <p>Join</p>
       <input class="option-input" type="text" maxlength="16" placeholder="Game id" formControlName="matchId">
       <input class="option-input" type="text" maxlength="16" placeholder="Player name" formControlName="name">
-      <div class="btn-container">
+      <div class="btn-container" *ngIf="!connecting">
         <button class="btn" [disabled]="homeForm.get('matchId').invalid || homeForm.get('name').invalid || !validMatchId || !validName" (click)="join()">Enter</button>
         <button class="btn" (click)="backToOptions()">Cancel</button>
+      </div>
+      <div class="btn-container" *ngIf="connecting">
+        <span>Connecting</span>
       </div>
     </div>
     <div class="game" *ngIf="homeState === 'game'">
