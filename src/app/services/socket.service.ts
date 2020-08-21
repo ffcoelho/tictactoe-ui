@@ -9,8 +9,10 @@ import { MatchModel, JoinMatchRequestModel } from '../models/web.model';
 export class SocketService {
 
   apiUrl = 'https://fcoelho-tictactoe-api.herokuapp.com';
+  // apiUrl = 'http://localhost:9000';
 
   initialized = false;
+  invite: string;
   socket: SocketIOClient.Socket;
 
   constructor() { }
@@ -40,5 +42,9 @@ export class SocketService {
       return;
     }
     this.socket.emit('play', place);
+  }
+
+  setInvite(id: string): void {
+    this.invite = id;
   }
 }

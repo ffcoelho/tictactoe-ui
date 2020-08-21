@@ -9,6 +9,7 @@ import { MatchRequestModel } from '../models/web.model';
 export class WebService {
 
   apiUrl = 'https://fcoelho-tictactoe-api.herokuapp.com';
+  // apiUrl = 'http://localhost:9000';
 
   constructor(private http: HttpClient) { }
 

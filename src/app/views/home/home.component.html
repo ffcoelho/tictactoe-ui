@@ -5,7 +5,6 @@
   <div class="home-content">
     <div class="options" *ngIf="homeState === 'options'">
       <button class="option-btn" [disabled]="apiStatus === 0 || apiStatus === 2 || roomsData.available === 0" (click)="selectCreate()">New</button>
-      <button class="option-btn" [disabled]="apiStatus === 0 || apiStatus === 2" (click)="selectJoin()">Join</button>
       <div class="server-status">
         <span *ngIf="apiStatus === 0">Connecting to server</span>
         <svg *ngIf="apiStatus === 1" xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24" fill="#239023">
@@ -36,14 +35,16 @@
     </div>
     <div class="options" [formGroup]="homeForm" *ngIf="homeState === 'join'">
       <p>Join</p>
-      <input class="option-input" type="text" maxlength="16" placeholder="Game id" formControlName="matchId">
-      <input class="option-input" type="text" maxlength="16" placeholder="Player name" formControlName="name">
+      <input class="option-input" type="text" maxlength="16" placeholder="Player name" formControlName="name" *ngIf="!inviteError">
+      <span  *ngIf="inviteError">Error: this match is not available.</span>
       <div class="btn-container" *ngIf="!connecting">
         <button class="btn" [disabled]="homeForm.get('matchId').invalid || homeForm.get('name').invalid || !validMatchId || !validName" (click)="join()">Enter</button>
-        <button class="btn" (click)="backToOptions()">Cancel</button>
       </div>
-      <div class="btn-container" *ngIf="connecting">
+      <div class="btn-container" *ngIf="connecting && !inviteError">
         <span>Connecting</span>
+      </div>
+      <div class="btn-container" *ngIf="connecting && inviteError">
+        <button class="btn" (click)="leaveGame()">Back</button>
       </div>
     </div>
     <div class="game" *ngIf="homeState === 'game'">
@@ -59,9 +60,11 @@
       </div>
       <div class="table match-info" *ngIf="matchData.players.length === 1">
         <div class="info">
-          <span>Game id:&nbsp;</span>
-          <span class="match-id-text">{{ matchData.id }}</span>
-          <input id="match-id" type="text" [value]="matchData.id">
+          <p class="match-id-text" *ngIf="!linkCopied">Match created!</p>
+          <p class="match-id-text" *ngIf="!linkCopied">Click to copy invite link.</p>
+          <p class="match-id-text" *ngIf="linkCopied">Link copied.</p>
+          <p class="match-id-text" *ngIf="linkCopied">Waiting for opponent to join.</p>
+          <input id="match-id" type="text" value="https://tictactoe-match.web.app/match/{{matchData.id}}">
         </div>
         <div class="copy-info" (click)="copyInfo()">
           <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24">

@@ -45,6 +45,8 @@ export class HomeComponent implements OnInit {
   public mark: number;
   public sentPlay = true;
   public blockUi = false;
+  public linkCopied = false;
+  public inviteError = false;
 
   constructor(private router: Router,
               private fb: FormBuilder,
@@ -62,6 +64,11 @@ export class HomeComponent implements OnInit {
       id: [ null, Validators.required ],
       name: [ null, Validators.required ]
     });
+    if (this.socketSvc.invite) {
+      this.homeForm.get('matchId').patchValue(this.socketSvc.invite);
+      this.homeState = HomeState.JOIN;
+      return;
+    }
     this.startApiTimer();
   }
 
@@ -133,6 +140,8 @@ export class HomeComponent implements OnInit {
         this.homeState = HomeState.GAME;
         this.connecting = false;
       }, () => this.connecting = false);
+    }, err => {
+      this.inviteError = true;
     });
   }
 
@@ -174,6 +183,7 @@ export class HomeComponent implements OnInit {
     matchIdInput.setSelectionRange(0, 99999);
     document.execCommand('copy');
     matchIdInput.blur();
+    this.linkCopied = true;
   }
 
   boardClick(idx: number): void {

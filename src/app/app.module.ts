@@ -8,13 +8,15 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './views/home/home.component';
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { SplashComponent } from './views/splash/splash.component';
+import { MatchComponent } from './views/match/match.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     SpinnerComponent,
-    SplashComponent
+    SplashComponent,
+    MatchComponent
   ],
   imports: [
     BrowserModule,
